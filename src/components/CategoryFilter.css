@@ -1,0 +1,128 @@
+.category-filter {
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.category-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    /* Pill shape */
+    color: #E5E5E5;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+}
+
+.category-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+}
+
+.category-trigger .chevron-open {
+    transform: rotate(180deg);
+}
+
+.category-count {
+    background: #E50914;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.category-clear-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: -4px;
+    /* Ajuste visual */
+}
+
+.category-clear-btn:hover {
+    background: #DC2626;
+    transform: scale(1.1);
+}
+
+/* Dropdown */
+.category-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 240px;
+    background: #161616;
+    border: 1px solid #2A2A2A;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: slideDown 0.2s ease;
+}
+
+.category-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #B3B3B3;
+}
+
+.category-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+}
+
+.category-option input[type="checkbox"] {
+    accent-color: #E50914;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.category-chips {
+    display: none;
+}
+
+/* Scrollbar */
+.category-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.category-dropdown::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
