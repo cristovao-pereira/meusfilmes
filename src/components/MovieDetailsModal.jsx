@@ -121,12 +121,12 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
                                 {assistido ? (
                                     <>
                                         <Check size={20} />
-                                        Não assistido
+                                        Marcar como não visto
                                     </>
                                 ) : (
                                     <>
                                         <Play size={20} fill="currentColor" />
-                                        Assistido
+                                        Marcar como assistido
                                     </>
                                 )}
                             </button>
