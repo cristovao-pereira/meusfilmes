@@ -14,6 +14,7 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
         poster_url: '',
         observacoes: '',
         assistido: false,
+        nota: '',
     });
     const [errors, setErrors] = useState({});
 
@@ -26,6 +27,7 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
                 poster_url: movie.poster_url || '',
                 observacoes: movie.observacoes || '',
                 assistido: movie.assistido || false,
+                nota: movie.nota || '',
             });
         } else if (isOpen && mode === 'create') {
             setFormData({
@@ -35,6 +37,7 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
                 poster_url: '',
                 observacoes: '',
                 assistido: false,
+                nota: '',
             });
         }
         setErrors({});
@@ -58,6 +61,10 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
 
         if (formData.ano && (isNaN(formData.ano) || formData.ano < 1800 || formData.ano > 2100)) {
             newErrors.ano = 'Ano inválido';
+        }
+
+        if (formData.nota && (isNaN(formData.nota) || formData.nota < 0 || formData.nota > 10)) {
+            newErrors.nota = 'A nota deve ser entre 0 e 10';
         }
 
         if (formData.poster_url && !isValidUrl(formData.poster_url)) {
@@ -88,6 +95,7 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
         const payload = {
             ...formData,
             ano: formData.ano ? parseInt(formData.ano) : null,
+            nota: formData.nota ? parseFloat(formData.nota) : null,
         };
 
         onSave(payload);
@@ -151,6 +159,19 @@ export const MovieModal = ({ isOpen, mode, movie, onSave, onClose, loading }) =>
                                 </label>
                             </div>
                         </div>
+
+                        <Input
+                            label="Nota (0-10)"
+                            type="number"
+                            placeholder="Ex: 8.5"
+                            value={formData.nota}
+                            onChange={(e) => handleChange('nota', e.target.value)}
+                            error={errors.nota}
+                            step="0.1"
+                            min="0"
+                            max="10"
+                            fullWidth
+                        />
 
                         <Input
                             label="URL do Pôster"

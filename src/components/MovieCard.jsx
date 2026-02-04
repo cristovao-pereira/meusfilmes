@@ -1,8 +1,8 @@
-import { Edit2, Trash2, Check, X } from 'lucide-react';
+import { Edit2, Trash2, Check, X, Star } from 'lucide-react';
 import './MovieCard.css';
 
 export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDetails }) => {
-    const { id, titulo, categorias, ano, poster_url, assistido, observacoes } = movie;
+    const { id, titulo, categorias, ano, poster_url, assistido, observacoes, nota } = movie;
 
     const handleCardClick = () => {
         if (onViewDetails) {
@@ -13,6 +13,12 @@ export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDeta
     return (
         <div className="movie-card animate-fadeIn" onClick={handleCardClick}>
             <div className="movie-poster">
+                {nota && (
+                    <div className="movie-rating">
+                        <Star size={14} fill="#ECC94B" color="#ECC94B" />
+                        <span>{nota.toFixed(1)}</span>
+                    </div>
+                )}
                 {poster_url ? (
                     <img src={poster_url} alt={titulo} />
                 ) : (
@@ -21,26 +27,31 @@ export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDeta
                     </div>
                 )}
                 <div className="movie-overlay">
-                    <button
-                        className="movie-action-btn"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit(id);
-                        }}
-                        title="Editar"
-                    >
-                        <Edit2 size={18} />
-                    </button>
-                    <button
-                        className="movie-action-btn movie-action-danger"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(id);
-                        }}
-                        title="Excluir"
-                    >
-                        <Trash2 size={18} />
-                    </button>
+
+                    {onEdit && (
+                        <button
+                            className="movie-action-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onEdit(id);
+                            }}
+                            title="Editar"
+                        >
+                            <Edit2 size={18} />
+                        </button>
+                    )}
+                    {onDelete && (
+                        <button
+                            className="movie-action-btn movie-action-danger"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onDelete(id);
+                            }}
+                            title="Excluir"
+                        >
+                            <Trash2 size={18} />
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -66,25 +77,27 @@ export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDeta
                 )}
 
                 <div className="movie-footer">
-                    <button
-                        className={`movie-watched-toggle ${assistido ? 'watched' : ''}`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onToggleWatched(id, !assistido);
-                        }}
-                    >
-                        {assistido ? (
-                            <>
-                                <Check size={16} />
-                                <span>Assistido</span>
-                            </>
-                        ) : (
-                            <>
-                                <X size={16} />
-                                <span>Não assistido</span>
-                            </>
-                        )}
-                    </button>
+                    {onToggleWatched && (
+                        <button
+                            className={`movie-watched-toggle ${assistido ? 'watched' : ''}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleWatched(id, !assistido);
+                            }}
+                        >
+                            {assistido ? (
+                                <>
+                                    <Check size={16} />
+                                    <span>Assistido</span>
+                                </>
+                            ) : (
+                                <>
+                                    <X size={16} />
+                                    <span>Não assistido</span>
+                                </>
+                            )}
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

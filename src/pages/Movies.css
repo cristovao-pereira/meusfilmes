@@ -203,3 +203,27 @@
         flex-wrap: wrap;
     }
 }
+.movies-nav {
+    display: flex;
+    gap: 24px;
+    margin-left: 32px;
+    flex: 1;
+}
+
+.movies-nav-link {
+    color: #B3B3B3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.movies-nav-link:hover,
+.movies-nav-link.active {
+    color: #FFFFFF;
+}
+
+@media (max-width: 768px) {
+    .movies-nav {
+        display: none; /* Hide for now on mobile or adapt */
+    }
+}

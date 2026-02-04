@@ -1,0 +1,106 @@
+.populares-page {
+    min-height: 100vh;
+    background: #0D0D0D;
+    padding-bottom: var(--spacing-3xl);
+}
+
+.populares-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-sticky);
+    background: linear-gradient(180deg, rgba(13, 13, 13, 0.95) 10%, transparent);
+    padding: 16px 0;
+    transition: all 0.3s ease;
+}
+
+.populares-header.scrolled {
+    background: #0D0D0D;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.populares-header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.populares-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.populares-logo-icon {
+    color: #E50914;
+}
+
+.populares-nav {
+    display: flex;
+    gap: 24px;
+}
+
+.populares-nav-link {
+    color: #B3B3B3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.populares-nav-link:hover,
+.populares-nav-link.active {
+    color: #FFFFFF;
+}
+
+.populares-main {
+    padding-top: 100px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.populares-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 24px;
+}
+
+.populares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.populares-error {
+    text-align: center;
+    padding: 40px;
+    color: #EF4444;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .populares-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .populares-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+    }
+}

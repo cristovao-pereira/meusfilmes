@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Plus, LogOut, AlertCircle, RefreshCw, Film, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -255,10 +255,16 @@ export const Movies = () => {
         <div className="movies-page">
             <header className={`movies-header ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="movies-header-content">
-                    <a href="#" className="movies-logo">
+                    <Link to="/movies" className="movies-logo">
                         <Film size={32} className="movies-logo-icon" />
                         <span>Meus Filmes</span>
-                    </a>
+                    </Link>
+
+                    <nav className="movies-nav">
+                        <Link to="/movies" className="movies-nav-link active">Minha Lista</Link>
+                        <Link to="/populares" className="movies-nav-link">Populares</Link>
+                    </nav>
+
                     <div className="movies-header-actions">
                         <Button variant="primary" onClick={handleOpenCreate}>
                             <Plus size={20} />
@@ -384,6 +390,10 @@ export const Movies = () => {
                 onClose={handleCloseDetails}
                 onToggleWatched={handleToggleWatched}
                 onEdit={handleOpenEdit}
+                onDelete={(id) => {
+                    handleCloseDetails();
+                    handleRequestDelete(id);
+                }}
             />
 
             <ConfirmDialog
