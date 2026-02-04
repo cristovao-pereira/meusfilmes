@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, LogOut, AlertCircle, RefreshCw, Film } from 'lucide-react';
+import { Plus, LogOut, AlertCircle, RefreshCw, Film, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { useDebounce } from '../hooks/useDebounce';
@@ -20,6 +20,34 @@ import './Movies.css';
 export const Movies = () => {
     const navigate = useNavigate();
     const { user, signOut } = useAuth();
+    const [subscribing, setSubscribing] = useState(false);
+
+    const handleSubscribe = async () => {
+        setSubscribing(true);
+        try {
+            const { data, error } = await supabase.functions.invoke('create-preference', {
+                body: {
+                    title: 'Assinatura Premium',
+                    price: 29.90,
+                    origin: window.location.origin
+                }
+            });
+
+            if (error) {
+                const body = await error.context?.json().catch(() => null);
+                throw new Error(body?.error || error.message);
+            }
+
+            if (data?.init_point) {
+                window.location.href = data.init_point;
+            }
+        } catch (error) {
+            console.error('Erro ao processar pagamento:', error);
+            alert('Não foi possível iniciar o pagamento. Tente novamente.');
+        } finally {
+            setSubscribing(false);
+        }
+    };
 
     const [movies, setMovies] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
@@ -235,6 +263,10 @@ export const Movies = () => {
                         <Button variant="primary" onClick={handleOpenCreate}>
                             <Plus size={20} />
                             Adicionar Filme
+                        </Button>
+                        <Button variant="secondary" onClick={handleSubscribe} loading={subscribing}>
+                            <CreditCard size={20} />
+                            Premium
                         </Button>
                         <Button variant="ghost" onClick={handleLogout} title="Sair">
                             <LogOut size={20} />
