@@ -3,7 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
-import { Movies } from './pages/Movies';
+import { Watchlist } from './pages/Watchlist';
 import { Populares } from './pages/Populares';
 
 function App() {
@@ -14,10 +14,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
-            path="/movies"
+            path="/watchlist"
             element={
               <ProtectedRoute>
-                <Movies />
+                <Watchlist />
               </ProtectedRoute>
             }
           />
@@ -29,7 +29,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/movies" replace />} />
+          <Route path="/" element={<Navigate to="/populares" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

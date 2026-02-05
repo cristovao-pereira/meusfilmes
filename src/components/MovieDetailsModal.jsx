@@ -1,11 +1,85 @@
-import { X, Play, Check, Star, Clock, Globe, Award, ImageIcon, Trash2, Edit2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Play, Check, Star, Clock, Heart, Bookmark, List, Edit2, Trash2 } from 'lucide-react';
+import { CircularScore } from './CircularScore';
 import './MovieDetailsModal.css';
 
-export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onEdit, onDelete }) => {
+const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjM2MzZkOGNiY2UxZDJmOTc1OTExYmQ1NDM3YmEwZiIsIm5iZiI6MTc3MDIyNTc2NC4yMDYsInN1YiI6IjY5ODM4MDY0NDViOTc3OGI3ZjFlZjNhMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ua1PSjBsSTKONHl6uw2i_3RxQ4WIq7MfRjSwFn__f3Y";
+
+export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onEdit, onDelete, onAddToWatchlist, inWatchlist }) => {
+    const [trailerKey, setTrailerKey] = useState(null);
+    const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && movie?.tmdb_id) {
+            fetchTrailer(movie.tmdb_id);
+        }
+        return () => {
+            setTrailerKey(null);
+        };
+    }, [isOpen, movie?.tmdb_id]);
+
+    const fetchTrailer = async (tmdbId) => {
+        setIsLoadingTrailer(true);
+        try {
+            const response = await fetch(
+                `https://api.themoviedb.org/3/movie/${tmdbId}/videos?language=pt-BR`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${TMDB_API_KEY}`,
+                        'accept': 'application/json'
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                // Find first YouTube trailer
+                const trailer = data.results.find(
+                    video => video.site === 'YouTube' && video.type === 'Trailer'
+                );
+
+                if (trailer) {
+                    setTrailerKey(trailer.key);
+                } else {
+                    // Try English if no Portuguese trailer
+                    const enResponse = await fetch(
+                        `https://api.themoviedb.org/3/movie/${tmdbId}/videos?language=en-US`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${TMDB_API_KEY}`,
+                                'accept': 'application/json'
+                            }
+                        }
+                    );
+                    if (enResponse.ok) {
+                        const enData = await enResponse.json();
+                        const enTrailer = enData.results.find(
+                            video => video.site === 'YouTube' && video.type === 'Trailer'
+                        );
+                        if (enTrailer) setTrailerKey(enTrailer.key);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching trailer:', error);
+        } finally {
+            setIsLoadingTrailer(false);
+        }
+    };
+
+    const handlePlayTrailer = () => {
+        if (trailerKey) {
+            window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank');
+        }
+    };
+
+    const handleToggleWatched = () => {
+        onToggleWatched(movie.id);
+    };
+
     if (!isOpen || !movie) return null;
 
     const {
-        id,
         titulo,
         categorias,
         ano,
@@ -15,138 +89,117 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
         observacoes,
         nota,
         duracao,
-        tagline,
-        total_votos
+        tagline
     } = movie;
 
-    const handleToggleWatched = () => {
-        onToggleWatched(id, !assistido);
-    };
-
-    // Use backdrop if available, otherwise fallback to poster for the background effect
     const bannerImage = backdrop_url || poster_url;
-    const isFallbackBanner = !backdrop_url && !!poster_url;
+    const formattedDuration = duracao ? `${Math.floor(duracao / 60)}h ${duracao % 60}m` : null;
 
     return (
-        <div className="movie-details-modal-backdrop" onClick={onClose}>
-            <div className="movie-details-modal wide" onClick={(e) => e.stopPropagation()}>
-                <button className="movie-details-close" onClick={onClose}>
+        <div className="tmdb-modal-backdrop" onClick={onClose}>
+            <div className="tmdb-modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="tmdb-modal-close" onClick={onClose}>
                     <X size={24} />
                 </button>
 
+                {/* Backdrop Image */}
                 {bannerImage && (
-                    <div className={`movie-details-backdrop ${isFallbackBanner ? 'fallback' : ''}`}>
+                    <div className="tmdb-backdrop">
                         <img src={bannerImage} alt={titulo} />
-                        <div className="movie-details-backdrop-overlay"></div>
+                        <div className="tmdb-backdrop-gradient" />
                     </div>
                 )}
 
-                <div className={`movie-details-container ${!bannerImage ? 'no-banner' : ''}`}>
-                    <div className="movie-details-poster large">
+                <div className="tmdb-modal-inner">
+                    {/* Poster */}
+                    <div className="tmdb-poster-section">
                         {poster_url ? (
-                            <img src={poster_url} alt={titulo} />
+                            <img src={poster_url} alt={titulo} className="tmdb-poster" />
                         ) : (
-                            <div className="movie-details-poster-placeholder">
+                            <div className="tmdb-poster-placeholder">
                                 <span>{titulo.charAt(0).toUpperCase()}</span>
                             </div>
                         )}
                     </div>
 
-                    <div className="movie-details-content">
-                        <div className="movie-details-header">
-                            <h2 className="movie-details-title">{titulo}</h2>
-                            {tagline && <p className="movie-details-tagline">"{tagline}"</p>}
+                    {/* Info Section */}
+                    <div className="tmdb-info-section">
+                        {/* Title */}
+                        <h1 className="tmdb-title">
+                            {titulo} {ano && <span className="tmdb-year">({ano})</span>}
+                        </h1>
 
-                            <div className="movie-details-meta">
-                                {ano && <span className="movie-details-year">{ano}</span>}
-                                {duracao && (
-                                    <span className="movie-details-duration">
-                                        <Clock size={14} /> {duracao} min
-                                    </span>
-                                )}
-                                {nota && (
-                                    <span className="movie-details-rating-badge">
-                                        <Star size={14} fill="#ECC94B" color="#ECC94B" />
-                                        {typeof nota === 'number' ? nota.toFixed(1) : nota}
-                                    </span>
-                                )}
-                                <div className={`movie-details-status ${assistido ? 'watched' : 'not-watched'}`}>
-                                    {assistido ? (
-                                        <>
-                                            <Check size={16} /> Assistido
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Clock size={16} /> Não assistido
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="movie-details-body">
-                            <div className="movie-details-section">
-                                <h3 className="movie-details-section-title">Gêneros</h3>
-                                <div className="movie-details-categories">
-                                    {categorias && categorias.map((categoria) => (
-                                        <span key={categoria} className="movie-details-category">
-                                            {categoria}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {observacoes && (
-                                <div className="movie-details-section">
-                                    <h3 className="movie-details-section-title">Sinopse</h3>
-                                    <p className="movie-details-notes">{observacoes}</p>
-                                </div>
+                        {/* Meta Info */}
+                        <div className="tmdb-meta">
+                            {categorias && categorias.length > 0 && (
+                                <span className="tmdb-genres">{categorias.join(', ')}</span>
                             )}
-
-                            {total_votos && (
-                                <div className="movie-details-section extra-info">
-                                    <div className="info-item">
-                                        <Award size={16} className="text-gray-400" />
-                                        <span>Total de votos: {total_votos}</span>
-                                    </div>
-                                </div>
+                            {formattedDuration && (
+                                <span className="tmdb-duration">
+                                    <Clock size={14} /> {formattedDuration}
+                                </span>
                             )}
                         </div>
 
-                        <div className="movie-details-actions">
+                        {/* Actions Row */}
+                        <div className="tmdb-actions-row">
+                            {nota && (
+                                <div className="tmdb-score-container">
+                                    <CircularScore score={nota} size={60} />
+                                    <span className="tmdb-score-label">Avaliação dos usuários</span>
+                                </div>
+                            )}
+
                             <button
-                                className="movie-details-action-btn primary"
+                                className={`tmdb-icon-btn ${assistido ? 'watched' : ''}`}
                                 onClick={handleToggleWatched}
+                                title={assistido ? "Marcar como não visto" : "Marcar como assistido"}
                             >
-                                {assistido ? (
-                                    <>
-                                        <Check size={20} />
-                                        Marcar como não visto
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play size={20} fill="currentColor" />
-                                        Marcar como assistido
-                                    </>
-                                )}
+                                <div className="icon-circle">
+                                    <Check size={18} />
+                                </div>
                             </button>
-                            {movie.tmdb_id && (
-                                <a
-                                    href={`https://www.themoviedb.org/movie/${movie.tmdb_id}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="movie-details-action-btn secondary"
-                                    title="Ver no TMDB"
-                                    style={{ textDecoration: 'none' }}
+
+                            {onAddToWatchlist && !inWatchlist && (
+                                <button
+                                    className="tmdb-icon-btn add-to-list"
+                                    onClick={() => onAddToWatchlist(movie.id)}
+                                    title="Adicionar à minha lista"
                                 >
-                                    <Globe size={18} />
-                                    TMDB
-                                </a>
+                                    <div className="icon-circle">
+                                        <Bookmark size={18} />
+                                    </div>
+                                </button>
                             )}
+
+                            {trailerKey && (
+                                <button
+                                    className="tmdb-play-trailer-btn"
+                                    onClick={handlePlayTrailer}
+                                >
+                                    <Play size={18} fill="currentColor" />
+                                    Reproduzir trailer
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Tagline */}
+                        {tagline && <p className="tmdb-tagline">{tagline}</p>}
+
+                        {/* Synopsis */}
+                        {observacoes && (
+                            <div className="tmdb-synopsis">
+                                <h3>Sinopse</h3>
+                                <p>{observacoes}</p>
+                            </div>
+                        )}
+
+                        {/* Additional Actions */}
+                        <div className="tmdb-additional-actions">
                             {onEdit && (
                                 <button
-                                    className="movie-details-action-btn secondary"
-                                    onClick={() => onEdit(id)}
+                                    className="tmdb-action-btn secondary"
+                                    onClick={() => onEdit(movie.id)}
                                 >
                                     <Edit2 size={18} />
                                     Editar
@@ -154,12 +207,12 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
                             )}
                             {onDelete && (
                                 <button
-                                    className="movie-details-action-btn danger" // styling needs addition
-                                    onClick={() => onDelete(id)}
+                                    className="tmdb-action-btn danger"
+                                    onClick={() => onDelete(movie.id)}
                                     title="Excluir filme"
-                                    style={{ flex: '0 0 auto', borderColor: '#DC2626', color: '#DC2626' }}
                                 >
                                     <Trash2 size={18} />
+                                    Excluir
                                 </button>
                             )}
                         </div>

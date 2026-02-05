@@ -1,0 +1,51 @@
+.watched-status-filter {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.watched-status-filter .filter-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    color: #E5E5E5;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.watched-status-filter .filter-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.watched-status-filter .filter-btn.active {
+    background: #E50914;
+    border-color: #E50914;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+}
+
+.watched-status-filter .filter-btn.active:hover {
+    background: #F40612;
+    box-shadow: 0 6px 16px rgba(229, 9, 20, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .watched-status-filter {
+        width: 100%;
+    }
+    
+    .watched-status-filter .filter-btn {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+}

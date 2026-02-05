@@ -1,7 +1,7 @@
-import { Edit2, Trash2, Check, X, Star } from 'lucide-react';
+import { Edit2, Trash2, Check, X, Star, Bookmark } from 'lucide-react';
 import './MovieCard.css';
 
-export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDetails }) => {
+export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDetails, onAddToWatchlist, inWatchlist }) => {
     const { id, titulo, categorias, ano, poster_url, assistido, observacoes, nota } = movie;
 
     const handleCardClick = () => {
@@ -27,6 +27,18 @@ export const MovieCard = ({ movie, onToggleWatched, onEdit, onDelete, onViewDeta
                     </div>
                 )}
                 <div className="movie-overlay">
+                    {onAddToWatchlist && !inWatchlist && (
+                        <button
+                            className="movie-action-btn movie-action-add"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAddToWatchlist(id);
+                            }}
+                            title="Adicionar à lista"
+                        >
+                            <Bookmark size={18} />
+                        </button>
+                    )}
 
                     {onEdit && (
                         <button

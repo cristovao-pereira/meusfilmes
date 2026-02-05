@@ -1,445 +1,386 @@
-.movie-details-modal-backdrop {
+/* TMDB-Style Modal */
+.tmdb-modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: var(--z-modal);
-    padding: var(--spacing-lg);
-    animation: fadeIn 0.2s ease;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
 }
 
-.movie-details-modal {
-    background: #161616;
-    border-radius: 12px;
-    width: 650px;
-    max-width: 100%;
-    max-height: 90vh;
-    overflow: hidden;
+.tmdb-modal-content {
     position: relative;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    animation: scaleIn 0.3s ease;
-    display: block;
-    /* Changed from flex column to block for absolute positioning handling */
-}
-
-.movie-details-modal.wide {
-    width: 900px;
-    height: 700px;
-    /* Removed flex-direction since display is block */
-}
-
-/* Backdrop Banner - Now Absolute */
-.movie-details-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 350px;
-    /* Slightly taller */
-    z-index: 0;
-    overflow: hidden;
-}
-
-/* Fallback styling for when we use poster as backdrop */
-.movie-details-backdrop.fallback img {
-    object-fit: cover;
-    object-position: center 20%;
-    filter: blur(25px) brightness(0.5);
-    /* Darker and blurrier for better text contrast */
-    transform: scale(1.1);
-}
-
-.movie-details-backdrop img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-    /* Smooth fade out at bottom */
-    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    max-width: 1200px;
+    max-height: 90vh;
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-/* Removed overlay div styling as we use mask or simpler gradient */
-.movie-details-backdrop-overlay {
+.tmdb-modal-close {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(22, 22, 22, 0) 40%, #161616 100%);
-}
-
-.movie-details-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 50;
-    /* Higher z-index */
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    border: none;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #FFFFFF;
     cursor: pointer;
     transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
 }
 
-.movie-details-close:hover {
-    background: #E50914;
-    border-color: #E50914;
+.tmdb-modal-close:hover {
+    background: rgba(0, 0, 0, 0.95);
     transform: scale(1.1);
 }
 
-/* Container for Poster + Content overlapping the banner */
-.movie-details-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
-    display: flex;
-    padding: 60px 40px 40px;
-    /* Reduced from 200px to 60px to pull content up */
-    gap: 32px;
+/* Backdrop */
+.tmdb-backdrop {
+    position: relative;
+    width: 100%;
+    height: 300px;
     overflow: hidden;
-    align-items: flex-start;
 }
 
-/* If no banner at all */
-.movie-details-container.no-banner {
-    padding-top: 40px;
-}
-
-.movie-details-poster.large {
-    width: 240px;
-    /* Condensed width */
-    height: 360px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-    background: #0D0D0D;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 40px;
-    /* Push down slightly so it sits nicely relative to banner top edge if needed, or leave at 0 if padding handles it */
-}
-
-.movie-details-poster img {
+.tmdb-backdrop img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.movie-details-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding-top: 30px;
-    /* Reduced from 80px to align better with backdrop fade */
-    overflow-y: auto;
-    /* Internal scroll */
-    padding-right: 8px;
+.tmdb-backdrop-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 100%;
+    background: linear-gradient(to top,
+            #1a1a1a 0%,
+            rgba(26, 26, 26, 0.9) 40%,
+            transparent 100%);
 }
 
-.movie-details-header {
-    margin-bottom: 24px;
-}
-
-.movie-details-title {
-    font-size: 2.75rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    margin: 0 0 8px 0;
-    line-height: 1.1;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    letter-spacing: -0.5px;
-}
-
-.movie-details-tagline {
-    font-size: 1.1rem;
-    color: #E5E5E5;
-    opacity: 0.8;
-    font-style: italic;
-    margin: 0 0 20px 0;
-    font-weight: 300;
-}
-
-.movie-details-meta {
+/* Modal Inner Layout */
+.tmdb-modal-inner {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 30px;
+    padding: 30px;
+    margin-top: -120px;
+    position: relative;
+    z-index: 2;
 }
 
-.movie-details-year,
-.movie-details-duration,
-.movie-details-rating-badge {
-    color: #E5E5E5;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+/* Poster Section */
+.tmdb-poster-section {
+    flex-shrink: 0;
 }
 
-.movie-details-rating-badge {
-    color: #ECC94B;
-    font-weight: 700;
-    background: rgba(236, 201, 75, 0.15);
-    border-color: rgba(236, 201, 75, 0.2);
+.tmdb-poster {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.movie-details-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
-}
-
-.movie-details-status.watched {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22C55E;
-    border: 1px solid rgba(34, 197, 94, 0.1);
-}
-
-.movie-details-status.not-watched {
-    background: rgba(255, 255, 255, 0.1);
-    color: #B3B3B3;
-}
-
-.movie-details-body {
-    flex: 1;
-}
-
-.movie-details-section {
-    margin-bottom: 28px;
-}
-
-.movie-details-section-title {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #777;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
-}
-
-.movie-details-categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.movie-details-category {
-    background: rgba(255, 255, 255, 0.08);
-    color: #E5E5E5;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-}
-
-.movie-details-category:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.movie-details-notes {
-    font-size: 1.05rem;
-    color: #CCC;
-    line-height: 1.7;
-    margin: 0;
-}
-
-.movie-details-actions {
-    margin-top: auto;
-    /* Push to bottom of content area */
-    display: flex;
-    gap: 12px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-}
-
-.movie-details-action-btn {
-    flex: 1;
-    max-width: 180px;
-    padding: 12px 16px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.tmdb-poster-placeholder {
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    text-decoration: none;
-    /* For the link button */
+    font-size: 80px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.1);
 }
 
-.movie-details-action-btn.primary {
-    background: #E50914;
+/* Info Section */
+.tmdb-info-section {
+    flex: 1;
     color: #FFFFFF;
-    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
 }
 
-.movie-details-action-btn.primary:hover {
-    background: #F40612;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(229, 9, 20, 0.4);
+.tmdb-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
 }
 
-.movie-details-action-btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
+.tmdb-year {
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+/* Meta Info */
+.tmdb-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
     color: #E5E5E5;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.movie-details-action-btn.secondary:hover {
+.tmdb-genres {
+    color: #FFFFFF;
+}
+
+.tmdb-duration {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Actions Row */
+.tmdb-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.tmdb-score-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tmdb-score-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    max-width: 80px;
+    line-height: 1.2;
+}
+
+/* Icon Button */
+.tmdb-icon-btn {
+    background: rgba(3, 37, 65, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #FFFFFF;
+    position: relative;
+}
+
+.tmdb-icon-btn:hover {
+    background: rgba(3, 37, 65, 1);
+    transform: scale(1.1);
+}
+
+.tmdb-icon-btn.watched {
+    background: rgba(34, 197, 94, 0.9);
+}
+
+.tmdb-icon-btn.watched:hover {
+    background: rgba(34, 197, 94, 1);
+}
+
+.tmdb-icon-btn.add-to-list {
+    background: rgba(59, 130, 246, 0.8);
+}
+
+.tmdb-icon-btn.add-to-list:hover {
+    background: rgba(59, 130, 246, 1);
+}
+
+.icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Play Trailer Button */
+.tmdb-play-trailer-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tmdb-play-trailer-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-.movie-details-action-btn.danger {
+/* Tagline */
+.tmdb-tagline {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 24px 0;
+}
+
+/* Synopsis */
+.tmdb-synopsis {
+    margin-bottom: 24px;
+}
+
+.tmdb-synopsis h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+}
+
+.tmdb-synopsis p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+/* Additional Actions */
+.tmdb-additional-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tmdb-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+}
+
+.tmdb-action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.tmdb-action-btn.danger {
+    border-color: rgba(220, 38, 38, 0.5);
+    color: #DC2626;
+}
+
+.tmdb-action-btn.danger:hover {
     background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    color: #F87171;
-}
-
-.movie-details-action-btn.danger:hover {
-    background: rgba(220, 38, 38, 0.2);
-    border-color: #EF4444;
-    color: #ffffff;
-}
-
-/* Scrollbar styling */
-.movie-details-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.movie-details-content::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.movie-details-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-}
-
-.movie-details-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    border-color: #DC2626;
 }
 
 /* Responsive */
-@media (max-width: 900px) {
-    .movie-details-modal.wide {
-        width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .movie-details-backdrop {
-        position: relative;
-        height: 250px;
-    }
-
-    .movie-details-container {
-        position: relative;
-        padding: 0 24px 24px;
-        margin-top: -80px;
+@media (max-width: 1024px) {
+    .tmdb-modal-inner {
         flex-direction: column;
         align-items: center;
-        gap: 24px;
-        overflow-y: auto;
-        /* Main scroll on mobile */
-        height: auto;
-        display: flex;
-        flex: 1;
+        margin-top: -100px;
+        padding: 30px;
     }
 
-    .movie-details-poster.large {
-        width: 180px;
-        height: 270px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+    .tmdb-poster {
+        width: 250px;
+        height: 375px;
     }
 
-    .movie-details-content {
-        padding-top: 0;
-        width: 100%;
-        text-align: center;
-        overflow: visible;
-        flex: initial;
-        /* Let it grow naturally */
+    .tmdb-poster-placeholder {
+        width: 250px;
+        height: 375px;
     }
 
-    .movie-details-header {
-        margin-bottom: 20px;
-    }
-
-    .movie-details-title {
+    .tmdb-title {
         font-size: 2rem;
     }
-
-    .movie-details-meta {
-        justify-content: center;
-    }
-
-    .movie-details-categories {
-        justify-content: center;
-    }
-
-    .movie-details-actions {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+@media (max-width: 768px) {
+    .tmdb-modal-backdrop {
+        padding: 0;
+        align-items: flex-start;
     }
 
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
+    .tmdb-modal-content {
+        border-radius: 0;
+        min-height: 100vh;
     }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
+    .tmdb-backdrop {
+        height: 300px;
+    }
+
+    .tmdb-modal-inner {
+        margin-top: -80px;
+        padding: 20px;
+        gap: 24px;
+    }
+
+    .tmdb-poster {
+        width: 200px;
+        height: 300px;
+    }
+
+    .tmdb-poster-placeholder {
+        width: 200px;
+        height: 300px;
+        font-size: 80px;
+    }
+
+    .tmdb-title {
+        font-size: 1.5rem;
+    }
+
+    .tmdb-actions-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tmdb-play-trailer-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tmdb-additional-actions {
+        flex-direction: column;
+    }
+
+    .tmdb-action-btn {
+        width: 100%;
+        justify-content: center;
     }
 }

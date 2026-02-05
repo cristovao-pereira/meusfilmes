@@ -28,7 +28,7 @@ export const Login = () => {
 
         try {
             await signIn(formData.email, formData.password);
-            navigate('/movies');
+            navigate('/populares');
         } catch (err) {
             setError('Credenciais inválidas. Tente novamente.');
         } finally {

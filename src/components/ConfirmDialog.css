@@ -1,4 +1,4 @@
-.confirm-dialog-backdrop {
+.dialog-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,22 +9,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: var(--z-modal);
-    padding: var(--spacing-lg);
-    animation: fadeIn 0.2s ease;
+    z-index: 10000;
+    padding: 24px;
 }
 
-.confirm-dialog {
+.dialog-container {
     background: #161616;
     border-radius: 12px;
     max-width: 400px;
     width: 100%;
     padding: 24px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    animation: scaleIn 0.3s ease;
 }
 
-.confirm-dialog-icon {
+.dialog-icon {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -36,7 +34,7 @@
     margin: 0 auto 16px;
 }
 
-.confirm-dialog-title {
+.dialog-title {
     font-size: 1.25rem;
     font-weight: 600;
     color: #FFFFFF;
@@ -44,7 +42,7 @@
     margin: 0 0 8px 0;
 }
 
-.confirm-dialog-message {
+.dialog-message {
     font-size: 0.875rem;
     color: #B3B3B3;
     text-align: center;
@@ -52,12 +50,12 @@
     margin: 0 0 24px 0;
 }
 
-.confirm-dialog-actions {
+.dialog-actions {
     display: flex;
     gap: 12px;
 }
 
-.confirm-dialog-actions button {
+.dialog-actions button {
     flex: 1;
 }
 
@@ -81,4 +79,12 @@
         opacity: 1;
         transform: scale(1);
     }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.2s ease;
+}
+
+.animate-scaleIn {
+    animation: scaleIn 0.3s ease;
 }

@@ -67,7 +67,7 @@ export const Signup = () => {
 
         try {
             await signUp(formData.email, formData.password, formData.name);
-            navigate('/movies');
+            navigate('/populares');
         } catch (err) {
             setErrors({ general: 'Não foi possível concluir o cadastro. Verifique os dados.' });
         } finally {

@@ -60,6 +60,23 @@
     color: #FFFFFF;
 }
 
+.populares-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.populares-user-name {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .populares-user-name {
+        display: inline;
+        margin-left: 8px;
+    }
+}
+
 .populares-main {
     padding-top: 100px;
 }

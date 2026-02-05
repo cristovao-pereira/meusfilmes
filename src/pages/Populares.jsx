@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Film, TrendingUp, AlertCircle, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Film, TrendingUp, AlertCircle, RefreshCw, ChevronLeft, ChevronRight, Bookmark, Plus, LogOut } from 'lucide-react';
 import { MovieCard } from '../components/MovieCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { SearchBar } from '../components/SearchBar';
+import { WatchedStatusFilter } from '../components/WatchedStatusFilter';
 import { Button } from '../components/Button';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -35,6 +37,7 @@ const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjM2MzZkOGNiY2UxZDJmOTc1O
 
 export const Populares = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [movies, setMovies] = useState([]);
     const [userMovies, setUserMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -43,9 +46,10 @@ export const Populares = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [detailsModal, setDetailsModal] = useState({ isOpen: false, movieId: null });
-    // New state for detailed movie data
     const [selectedMovieFullDetails, setSelectedMovieFullDetails] = useState(null);
     const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [watchedFilter, setWatchedFilter] = useState('all');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -224,6 +228,48 @@ export const Populares = () => {
         }
     };
 
+    const handleAddToWatchlist = async (tmdbId) => {
+        const movieToAdd = movies.find(m => m.id === tmdbId);
+
+        if (!movieToAdd) {
+            alert("Filme não encontrado.");
+            return;
+        }
+
+        const status = getMovieStatus(movieToAdd);
+
+        if (status.inList) {
+            alert("Este filme já está na sua lista!");
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('movies')
+                .insert([{
+                    user_id: user.id,
+                    titulo: movieToAdd.titulo,
+                    categorias: movieToAdd.categorias,
+                    ano: parseInt(movieToAdd.ano) || null,
+                    poster_url: movieToAdd.poster_url,
+                    observacoes: movieToAdd.observacoes,
+                    assistido: false,
+                    nota: movieToAdd.nota
+                }]);
+
+            if (error) throw error;
+
+            // Refresh user movies to update UI
+            await loadUserMovies();
+            alert("Filme adicionado à sua lista!");
+
+        } catch (err) {
+            console.error("Erro ao adicionar à lista", err);
+            alert("Erro ao adicionar filme à lista.");
+        }
+    };
+
+
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
             setCurrentPage(newPage);
@@ -243,6 +289,15 @@ export const Populares = () => {
     const handleCloseDetails = () => {
         setDetailsModal({ isOpen: false, movieId: null });
         setSelectedMovieFullDetails(null);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await supabase.auth.signOut();
+            navigate('/login');
+        } catch (error) {
+            console.error('Erro ao fazer logout:', error);
+        }
     };
 
     const getDisplayMovie = (movie) => {
@@ -274,24 +329,73 @@ export const Populares = () => {
         return getDisplayMovie(merged);
     }
 
+    // Filter movies by search term and watched status
+    const filterMoviesBySearchAndStatus = (moviesToFilter) => {
+        let filtered = [...moviesToFilter];
+
+        // Filter by search term
+        if (searchTerm.trim()) {
+            filtered = filtered.filter(movie =>
+                movie.titulo.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by watched status
+        if (watchedFilter !== 'all') {
+            filtered = filtered.filter(movie => {
+                const status = getMovieStatus(movie);
+                if (watchedFilter === 'watched') {
+                    return status.assistido === true;
+                } else {
+                    return status.assistido === false;
+                }
+            });
+        }
+
+        return filtered;
+    };
+
+    const filteredMovies = filterMoviesBySearchAndStatus(movies);
+
     return (
         <div className="populares-page">
             <header className={`populares-header ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="populares-header-content">
-                    <Link to="/movies" className="populares-logo">
+                    <Link to="/watchlist" className="populares-logo">
                         <Film size={32} className="populares-logo-icon" />
                         <span>Meus Filmes</span>
                     </Link>
 
                     <nav className="populares-nav">
-                        <Link to="/movies" className="populares-nav-link">Minha Lista</Link>
+                        <Link to="/watchlist" className="populares-nav-link">Minha Lista</Link>
                         <Link to="/populares" className="populares-nav-link active">Populares</Link>
                     </nav>
+
+                    <div className="populares-header-actions">
+                        <Button variant="ghost" onClick={handleLogout} title="Sair">
+                            <LogOut size={20} />
+                            <span className="populares-user-name">
+                                {user?.email?.split('@')[0]}
+                            </span>
+                        </Button>
+                    </div>
                 </div>
             </header>
 
             <main className="populares-main">
                 <div className="container">
+                    <div className="movies-filters" style={{ marginBottom: '24px' }}>
+                        <SearchBar
+                            value={searchTerm}
+                            onChange={setSearchTerm}
+                            placeholder="Buscar por título..."
+                        />
+                        <WatchedStatusFilter
+                            value={watchedFilter}
+                            onChange={setWatchedFilter}
+                        />
+                    </div>
+
                     <div className="flex items-center gap-3 mb-6">
                         <TrendingUp className="text-red-500" size={32} />
                         <h1 className="populares-section-title mb-0">Populares no Momento</h1>
@@ -313,8 +417,9 @@ export const Populares = () => {
                     {!isLoading && !error && (
                         <>
                             <div className="populares-grid">
-                                {movies.map(movie => {
+                                {filteredMovies.map(movie => {
                                     const displayMovie = getDisplayMovie(movie);
+                                    const status = getMovieStatus(movie);
 
                                     return (
                                         <MovieCard
@@ -322,6 +427,8 @@ export const Populares = () => {
                                             movie={displayMovie}
                                             onToggleWatched={() => handleToggleWatched(movie.id)}
                                             onViewDetails={handleViewDetails}
+                                            onAddToWatchlist={handleAddToWatchlist}
+                                            inWatchlist={status.inList}
                                         />
                                     );
                                 })}
@@ -358,6 +465,8 @@ export const Populares = () => {
                 movie={getModalMovieData()}
                 onClose={handleCloseDetails}
                 onToggleWatched={(id) => handleToggleWatched(id)}
+                onAddToWatchlist={handleAddToWatchlist}
+                inWatchlist={detailsModal.movieId ? getMovieStatus(movies.find(m => m.id === detailsModal.movieId)).inList : false}
             />
         </div>
     );
