@@ -14,16 +14,18 @@ Aplicativo completo de gerenciamento de filmes com autenticação, permitindo qu
 - ✅ **Estados de loading, empty e error**
 - ✅ **Design premium e responsivo**
 - ✅ **Dark mode automático**
-- ✅ **Plano Premium** com pagamento via Mercado Pago
+- ✅ **Segurança Anti-Bot** (Cloudflare Turnstile)
+- ✅ **Integração com TMDB API** para dados reais de filmes
 
 ## 🚀 Tecnologias
 
 - **Frontend**: React 18 + Vite
 - **Backend/Auth**: Supabase (PostgreSQL + Auth + Edge Functions)
-- **Pagamentos**: Mercado Pago (Checkout Pro)
 - **Roteamento**: React Router v6
 - **Ícones**: Lucide React
 - **Estilo**: CSS moderno com design system premium
+- **Segurança**: Cloudflare Turnstile
+- **Dados**: TMDB API
 
 ## 📋 Pré-requisitos
 
@@ -49,20 +51,6 @@ npm install
    - `VITE_SUPABASE_URL`: URL do seu projeto Supabase
    - `VITE_SUPABASE_ANON_KEY`: Chave anônima (anon/public key)
 
-### 3. Configurar Edge Function (Pagamentos)
-
-Para habilitar a funcionalidade Premium, você precisa deployar a Edge Function `create-preference`:
-
-1. Instale o Supabase CLI e faça login
-2. Crie a função e adicione o código da integração
-3. Configure o segredo do Mercado Pago:
-   ```bash
-   npx supabase secrets set MERCADO_PAGO_ACCESS_TOKEN=seu_access_token_aqui
-   ```
-4. Faça o deploy da função:
-   ```bash
-   npx supabase functions deploy create-preference --no-verify-jwt
-   ```
 
 ### 3. Criar tabela no Supabase
 
@@ -132,6 +120,16 @@ CREATE TRIGGER update_movies_updated_at
 2. Habilite **Email** provider
 3. (Opcional) Configure confirmação de e-mail conforme necessário
 
+### 5. Configurar Proteção Anti-Bot (Turnstile)
+
+1. Crie uma conta no [Cloudflare Turnstile](https://dash.cloudflare.com/)
+2. Crie um widget e obtenha o `Site Key` e `Secret Key`
+3. Adicione o `Site Key` no arquivo `.env`:
+   ```bash
+   VITE_TURNSTILE_SITE_KEY=seu_site_key_aqui
+   ```
+4. Configure o `Secret Key` no Supabase em **Authentication** > **Bot Protection**
+
 ## 🎯 Executar o projeto
 
 ```bash
@@ -150,7 +148,6 @@ O aplicativo estará disponível em `http://localhost:5173`
 6. **Marcar como assistido**: Clique no botão de toggle em cada card
 7. **Editar**: Passe o mouse sobre o card e clique no ícone de editar
 8. **Excluir**: Passe o mouse sobre o card e clique no ícone de lixeira (confirmação será solicitada)
-9. **Assinar Premium**: Clique no botão "Premium" para desbloquear funcionalidades exclusivas (Pagamento via Mercado Pago - Pix, Cartão, Boleto)
 
 ## 🎨 Design
 
@@ -236,10 +233,6 @@ src/
 ## 📄 Licença
 
 Este projeto foi criado para fins educacionais.
-
-## 🤝 Contribuindo
-
-Sinta-se à vontade para abrir issues ou enviar pull requests!
 
 ---
 
