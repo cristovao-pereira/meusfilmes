@@ -33,7 +33,7 @@ const GENRES = {
     37: "Faroeste"
 };
 
-const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjM2MzZkOGNiY2UxZDJmOTc1OTExYmQ1NDM3YmEwZiIsIm5iZiI6MTc3MDIyNTc2NC4yMDYsInN1YiI6IjY5ODM4MDY0NDViOTc3OGI3ZjFlZjNhMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ua1PSjBsSTKONHl6uw2i_3RxQ4WIq7MfRjSwFn__f3Y";
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export const Populares = () => {
     const { user } = useAuth();

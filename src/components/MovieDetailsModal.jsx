@@ -3,7 +3,7 @@ import { X, Play, Check, Star, Clock, Heart, Bookmark, List, Edit2, Trash2 } fro
 import { CircularScore } from './CircularScore';
 import './MovieDetailsModal.css';
 
-const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjM2MzZkOGNiY2UxZDJmOTc1OTExYmQ1NDM3YmEwZiIsIm5iZiI6MTc3MDIyNTc2NC4yMDYsInN1YiI6IjY5ODM4MDY0NDViOTc3OGI3ZjFlZjNhMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ua1PSjBsSTKONHl6uw2i_3RxQ4WIq7MfRjSwFn__f3Y";
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onEdit, onDelete, onAddToWatchlist, inWatchlist }) => {
     const [trailerKey, setTrailerKey] = useState(null);
