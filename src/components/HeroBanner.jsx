@@ -9,7 +9,9 @@ const FEATURED_MOVIES = [
         description: 'Paul Atreides une forças com Chani e os Fremen enquanto busca vingança contra os conspiradores que destruíram sua família.',
         image: 'https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
         year: 2024,
-        rating: '8.8'
+        rating: '8.8',
+        trailerUrl: 'https://www.youtube.com/watch?v=Way9Dexny3w',
+        tmdbUrl: 'https://www.themoviedb.org/movie/693134-dune-part-two'
     },
     {
         id: 2,
@@ -17,7 +19,9 @@ const FEATURED_MOVIES = [
         description: 'A história do físico J. Robert Oppenheimer e seu papel no desenvolvimento da bomba atômica durante a Segunda Guerra Mundial.',
         image: 'https://image.tmdb.org/t/p/original/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg',
         year: 2023,
-        rating: '8.5'
+        rating: '8.5',
+        trailerUrl: 'https://www.youtube.com/watch?v=uYPbbksJxIg',
+        tmdbUrl: 'https://www.themoviedb.org/movie/872585-oppenheimer'
     },
     {
         id: 3,
@@ -25,7 +29,9 @@ const FEATURED_MOVIES = [
         description: 'A fantástica evolução de Bella Baxter, uma jovem trazida de volta à vida pelo brilhante e pouco ortodoxo cientista Dr. Godwin Baxter.',
         image: 'https://image.tmdb.org/t/p/original/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg',
         year: 2023,
-        rating: '8.3'
+        rating: '8.3',
+        trailerUrl: 'https://www.youtube.com/watch?v=RlbR5N6veqw',
+        tmdbUrl: 'https://www.themoviedb.org/movie/792307-poor-things'
     }
 ];
 
@@ -82,14 +88,24 @@ export const HeroBanner = () => {
                             </div>
                             <p className="hero-description">{movie.description}</p>
                             <div className="hero-actions">
-                                <button className="btn btn-primary btn-lg">
+                                <a
+                                    href={movie.trailerUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-primary btn-lg"
+                                >
                                     <Play size={24} fill="currentColor" />
-                                    Assistir
-                                </button>
-                                <button className="btn btn-secondary btn-lg">
+                                    Veja o trailer
+                                </a>
+                                <a
+                                    href={movie.tmdbUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-secondary btn-lg"
+                                >
                                     <Info size={24} />
                                     Mais Informações
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
