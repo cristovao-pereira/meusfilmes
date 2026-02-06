@@ -236,4 +236,4 @@ Este projeto foi criado para fins educacionais.
 
 ---
 
-Desenvolvido com ❤️ usando React e Supabase
+Desenvolvido com ❤️ usando React e Supabase 
