@@ -9,12 +9,15 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
     const [trailerKey, setTrailerKey] = useState(null);
     const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
 
+    const [showTrailer, setShowTrailer] = useState(false);
+
     useEffect(() => {
         if (isOpen && movie?.tmdb_id) {
             fetchTrailer(movie.tmdb_id);
         }
         return () => {
             setTrailerKey(null);
+            setShowTrailer(false);
         };
     }, [isOpen, movie?.tmdb_id]);
 
@@ -69,7 +72,7 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
 
     const handlePlayTrailer = () => {
         if (trailerKey) {
-            window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank');
+            setShowTrailer(true);
         }
     };
 
@@ -219,6 +222,26 @@ export const MovieDetailsModal = ({ isOpen, movie, onClose, onToggleWatched, onE
                     </div>
                 </div>
             </div>
+
+            {/* Trailer Modal Overlay */}
+            {showTrailer && (
+                <div className="trailer-modal-overlay" onClick={() => setShowTrailer(false)}>
+                    <div className="trailer-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="trailer-modal-close" onClick={() => setShowTrailer(false)}>
+                            <X size={24} />
+                        </button>
+                        <iframe
+                            width="100%"
+                            height="100%"
+                            src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
