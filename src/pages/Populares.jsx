@@ -80,18 +80,20 @@ export const Populares = () => {
         try {
             await loadUserMovies();
 
-            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${page}`, {
+            const response = await fetch(`https://n8n-service-j3k0.onrender.com/webhook/tmdb?language=pt-BR&page=${page}`, {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${TMDB_API_KEY}`,
-                    'accept': 'application/json'
-                }
+                    'Authorization': `Bearer ${import.meta.env.VITE_N8N_WEBHOOK_TOKEN}`
+                },
+                body: ''
             });
 
             if (!response.ok) {
                 throw new Error('Falha ao carregar filmes populares');
             }
 
-            const data = await response.json();
+            const json = await response.json();
+            const data = Array.isArray(json) ? json[0] : json;
 
             // TMDB limits pages to 500 for non-commercial API keys usually, or just high number
             // We'll trust the API but maybe cap display if needed
