@@ -19,6 +19,20 @@ export const Signup = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
+    const getSignupErrorMessage = (err) => {
+        const message = (err?.message || '').toLowerCase();
+
+        if (message.includes('captcha')) {
+            return 'Cadastro bloqueado por captcha. No Supabase, desative Authentication > Bot Detection para usar sem Turnstile.';
+        }
+
+        if (message.includes('already registered')) {
+            return 'Este e-mail ja esta cadastrado. Tente fazer login.';
+        }
+
+        return err?.message || 'Nao foi possivel concluir o cadastro. Verifique os dados.';
+    };
+
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
         setErrors((prev) => ({ ...prev, [field]: '', general: '' }));
@@ -69,7 +83,8 @@ export const Signup = () => {
             await signUp(formData.email, formData.password, formData.name);
             navigate('/populares');
         } catch (err) {
-            setErrors({ general: 'Não foi possível concluir o cadastro. Verifique os dados.' });
+            console.error('Erro no cadastro:', err);
+            setErrors({ general: getSignupErrorMessage(err) });
         } finally {
             setLoading(false);
         }

@@ -80,12 +80,11 @@ export const Populares = () => {
         try {
             await loadUserMovies();
 
-            const response = await fetch(`https://n8n-service-j3k0.onrender.com/webhook/tmdb?language=pt-BR&page=${page}`, {
-                method: 'POST',
+            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${page}`, {
                 headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_N8N_WEBHOOK_TOKEN}`
-                },
-                body: ''
+                    'Authorization': `Bearer ${TMDB_API_KEY}`,
+                    'accept': 'application/json'
+                }
             });
 
             if (!response.ok) {

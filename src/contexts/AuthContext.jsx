@@ -47,13 +47,10 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
-    const signIn = async (email, password, captchaToken) => {
+    const signIn = async (email, password) => {
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
-            options: {
-                captchaToken,
-            },
         });
 
         if (error) throw error;
