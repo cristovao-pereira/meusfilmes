@@ -21,14 +21,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/populares"
-            element={
-              <ProtectedRoute>
-                <Populares />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/populares" element={<Populares />} />
           <Route path="/" element={<Navigate to="/populares" replace />} />
         </Routes>
       </AuthProvider>
