@@ -1,19 +1,19 @@
 # 🎬 Meus Filmes
 
-Aplicativo completo de gerenciamento de filmes com autenticação, permitindo que usuários cadastrem filmes que desejam assistir, marquem como assistidos, filtrem por nome e categoria, e realizem operações CRUD completas.
+Um aplicativo completo de gerenciamento de filmes com autenticação, permitindo que usuários cadastrem filmes que desejam assistir, marquem como assistidos, filtrem por nome e categoria, e realizem operações CRUD completas.
 
 ## ✨ Funcionalidades
 
 - ✅ **Autenticação completa** (Login/Cadastro com Supabase Auth)
-- ✅ **Listagem de filmes** com busca e filtros
-- ✅ **CRUD completo** via modais
-- ✅ **Toggle de "Assistido"**
-- ✅ **Filtro por categorias** (multi-select)
-- ✅ **Busca por título** com debounce
-- ✅ **Paginação**
-- ✅ **Estados de loading, empty e error**
-- ✅ **Design premium e responsivo**
-- ✅ **Dark mode automático**
+- ✅ **Listagem de filmes** com busca e filtros avançados
+- ✅ **CRUD completo** via modais interativos
+- ✅ **Toggle de "Assistido"** para acompanhar seu progresso
+- ✅ **Filtro por categorias** (multi-select) para organização personalizada
+- ✅ **Busca por título** com debounce para melhor performance
+- ✅ **Paginação** para navegação suave
+- ✅ **Estados de loading, empty e error** para melhor experiência do usuário
+- ✅ **Design premium e responsivo** para todos os dispositivos
+- ✅ **Dark mode automático** para conforto visual
 - ✅ **Integração com TMDB API** para dados reais de filmes
 
 ## 🚀 Tecnologias
@@ -33,6 +33,39 @@ Aplicativo completo de gerenciamento de filmes com autenticação, permitindo qu
 ## 🎥 Demonstração
 
 ![Demonstração do Meus Filmes](public/assets/meufilme-gif.gif)
+
+## 📖 Como Usar
+
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/seu-usuario/meusfilmes.git
+   ```
+
+2. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure o Supabase**:
+   - Crie um projeto no [Supabase](https://supabase.com)
+   - Copie o arquivo `.env.example` para `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Preencha as variáveis de ambiente no arquivo `.env` com suas credenciais do Supabase.
+
+4. **Inicie o aplicativo**:
+   ```bash
+   npm run dev
+   ```
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+
+## 📜 Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## ⚙️ Configuração
 
