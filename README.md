@@ -30,6 +30,10 @@ Aplicativo completo de gerenciamento de filmes com autenticação, permitindo qu
 - Node.js 18+ instalado
 - Conta no [Supabase](https://supabase.com)
 
+## 🎥 Demonstração
+
+![Demonstração do Meus Filmes](public/assets/meufilme-gif.gif)
+
 ## ⚙️ Configuração
 
 ### 1. Instalar dependências
